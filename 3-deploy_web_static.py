@@ -12,46 +12,50 @@ env.hosts = ['18.234.192.255', '54.164.58.89']
 
 
 def do_pack():
-    """Compress the web_static folder"""
+    """Creates a compressed archive of the web_static folder"""
 
-    try:
-        local("mkdir -p versions")
-        currentTime = datetime.now().strftime("%Y%m%d%H%M%S")
-        path = "versions/web_static_{}.tgz".format(currentTime)
-        local("tar -cvzf {} web_static".format(path))
-        return path
-    except:
+    local("mkdir -p versions")
+    currentTime = datetime.now().strftime("%Y%m%d%H%M%S")
+    path = "versions/web_static_{}.tgz".format(currentTime)
+    print("\nPackaging new version of web_static: {}".format(path))
+    local("tar -cvzf {} web_static".format(path))
+
+    if not exists(path):
+        print("\nfailed to package {}\n".format(path))
         return None
+
+    print("\nNew version packaged: {}\n".format(path))
+    return path
 
 
 def do_deploy(archive_path):
-    """Deploys the web static to the server"""
+    """Deploys web static to the server"""
     if not exists(archive_path):
         return False
 
     try:
-        archiveWithExt = archive_path.split("/")[-1]
-        archiveNoExt = archiveWithExt.split(".")[0]
-        releaseVersion = "/data/web_static/releases/{}/".format(archiveNoExt)
+        archive_name = archive_path.split("/")[-1]
+        folder_name = archive_name.split(".")[0]
+        releaseVersion = "/data/web_static/releases/{}/".format(folder_name)
         symLink = "/data/web_static/current"
 
-        put(archive_path, "/tmp/")
+        print("\nDeploying new version from: {}...".format(folder_name))
+        put(archive_path, "/tmp/{}".format(archive_name))
         run("mkdir -p {}".format(releaseVersion))
-        run("tar -xzf /tmp/{} -C {}".format(archiveWithExt, releaseVersion))
-        run("rm -rf /tmp/{}".format(archiveWithExt))
+        run("tar -xzf /tmp/{} -C {}".format(archive_name, releaseVersion))
+        run("rm -rf /tmp/{}".format(archive_name))
         run("mv {0}web_static/* {0}".format(releaseVersion))
         run("rm -rf {}web_static".format(releaseVersion))
         run("rm -rf {}".format(symLink))
         run("ln -s {} {}".format(releaseVersion, symLink))
+        print("\nNew version deployed as: {}".format(releaseVersion))
         return True
-    except:
+    except Exception as e:
+        print("\nfailed to deploy version {}: {}\n".format(releaseVersion, e))
         return False
 
 
 def deploy():
     """Fully deploys the staic web page"""
     archivePath = do_pack()
-    if not archivePath:
-        return False
-
-    return do_deploy(archivePath)
+    return do_deploy(archivePath) if archivePath else False

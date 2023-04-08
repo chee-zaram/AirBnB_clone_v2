@@ -16,19 +16,22 @@ def do_deploy(archive_path):
         return False
 
     try:
-        archiveWithExt = archive_path.split("/")[-1]
-        archiveNoExt = archiveWithExt.split(".")[0]
-        releaseVersion = "/data/web_static/releases/{}/".format(archiveNoExt)
+        archive_name = archive_path.split("/")[-1]
+        folder_name = archive_name.split(".")[0]
+        releaseVersion = "/data/web_static/releases/{}/".format(folder_name)
         symLink = "/data/web_static/current"
 
-        put(archive_path, "/tmp/")
+        print("Deploying new version from {}...".format(folder_name))
+        put(archive_path, "/tmp/{}".format(archive_name))
         run("mkdir -p {}".format(releaseVersion))
-        run("tar -xzf /tmp/{} -C {}".format(archiveWithExt, releaseVersion))
-        run("rm -rf /tmp/{}".format(archiveWithExt))
+        run("tar -xzf /tmp/{} -C {}".format(archive_name, releaseVersion))
+        run("rm -rf /tmp/{}".format(archive_name))
         run("mv {0}web_static/* {0}".format(releaseVersion))
         run("rm -rf {}web_static".format(releaseVersion))
         run("rm -rf {}".format(symLink))
         run("ln -s {} {}".format(releaseVersion, symLink))
+        print("New version deployed -> {}".format(releaseVersion))
         return True
-    except:
+    except Exception:
+        print("Failed to deploy new version -> {}".format(releaseVersion))
         return False
