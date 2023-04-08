@@ -32,8 +32,3 @@ def do_clean(number=0):
     # Delete old archives in web servers
     with cd("/data/web_static/releases"):
         sudo("ls -t | tail -n +{} | xargs rm -rf".format(number))
-
-    # Delete symbolic links that are broken
-    with cd("/data/web_static/current/"):
-        sudo("ls -l | awk '{print $9}' | grep -v ^$ | "
-             "grep -v ^web_static | xargs rm -rf")
