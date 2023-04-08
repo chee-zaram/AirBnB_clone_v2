@@ -4,9 +4,10 @@
 
 # Install Nginx if not already installed
 if [ ! -x "$(command -v nginx)" ]; then
-    sudo service "$(sudo lsof -i :80 | grep LISTEN | awk '{print $1}' | head -n 1)" stop &/dev/null;
-    sudo apt-get update
-    sudo apt-get install -y nginx
+    sudo service "$(sudo lsof -i :80 | grep LISTEN | awk '{print $1}' | head -n 1)" stop &>/dev/null;
+    sudo apt-get update &>/dev/null
+    sudo apt-get install -y nginx &>/dev/null
+    echo "nginx has been installed"
 fi
 
 # Create required directories
