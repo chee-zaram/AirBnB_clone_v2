@@ -10,5 +10,8 @@ __pycache__/
 models/engine/file_database.json
 file.json
 
+# ignore versions archive
+versions
+
 # Ignore screenshots dir
 screenshots

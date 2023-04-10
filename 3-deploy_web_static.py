@@ -10,7 +10,7 @@ from os.path import exists
 
 env.hosts = ['18.234.192.255', '54.164.58.89']
 env.user = 'ubuntu'
-env.key_filename = '~/.ssh/alx_id_rsa'
+env.key_filename = '/home/cheezaram/.ssh/alx_id_rsa'
 
 
 @runs_once
