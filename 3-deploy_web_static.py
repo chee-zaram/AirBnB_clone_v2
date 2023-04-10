@@ -9,6 +9,8 @@ from datetime import datetime
 from os.path import exists
 
 env.hosts = ['18.234.192.255', '54.164.58.89']
+env.user = 'ubuntu'
+env.key_filename = '~/.ssh/alx_id_rsa'
 
 
 @runs_once
@@ -30,7 +32,7 @@ def do_pack():
 
 
 def do_deploy(archive_path):
-    """Deploys web static to the server"""
+    """Deploys the web static to the server"""
     if not exists(archive_path):
         return False
 
