@@ -45,11 +45,10 @@ def do_deploy(archive_path):
         print("\nDeploying new version from: {}...".format(folder_name))
         put(archive_path, "/tmp/{}".format(archive_name))
         run("mkdir -p {}".format(releaseVersion))
-        run("tar -xzf /tmp/{} -C {}".format(archive_name, releaseVersion))
-        run("rm -rf /tmp/{}".format(archive_name))
-        run("mv {0}web_static/* {0}".format(releaseVersion))
-        run("rm -rf {}web_static".format(releaseVersion))
-        run("rm -rf {}".format(symLink))
+        run("tar -xzf /tmp/{} -C {} --strip-components=1".format(
+            archive_name, releaseVersion))
+        run("rm /tmp/{}".format(archive_name))
+        run("rm -f {}".format(symLink))
         run("ln -s {} {}".format(releaseVersion, symLink))
         print("\nNew version deployed as: {}".format(releaseVersion))
         return True
