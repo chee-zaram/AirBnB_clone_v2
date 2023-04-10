@@ -4,13 +4,14 @@ Fabric script to generate a .tgz archive from the contents of the web_static
 and move it to the servers
 """
 
-from fabric.api import local, put, env, run
+from fabric.api import local, put, env, run, runs_once
 from datetime import datetime
 from os.path import exists
 
 env.hosts = ['18.234.192.255', '54.164.58.89']
 
 
+@runs_once
 def do_pack():
     """Creates a compressed archive of the web_static folder"""
 
