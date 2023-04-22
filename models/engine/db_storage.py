@@ -41,7 +41,8 @@ class DBStorage:
         database = getenv("HBNB_MYSQL_DB", "Please set database")
         port = 3306
 
-        url = f"mysql+mysqldb://{user}:{password}@{host}:{port}/{database}"
+        url = "mysql+mysqldb://{}:{}@{}:{}/{}".format(
+            user, password, host, port, database)
         self.__engine = create_engine(url, pool_pre_ping=True)
 
         if dev_environ == "test":
@@ -58,7 +59,7 @@ class DBStorage:
         elif not cls or cls.__name__ in DBStorage.__valid_classes:
             pass
         else:
-            raise TypeError(f"{cls} must be a subclass of BaseModel")
+            raise TypeError("{} must be a subclass of BaseModel".format(cls))
 
         if cls and cls in DBStorage.__valid_classes.values():
             db_storage = self.__session.query(cls).all()
@@ -95,7 +96,7 @@ class DBStorage:
         session_factory = sessionmaker(
             bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session_factory)
-        self.__session = Session()
+        self.__session = Session
 
     def close(self):
         """Closes the current session"""

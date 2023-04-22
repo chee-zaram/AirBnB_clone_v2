@@ -27,4 +27,4 @@ class State(BaseModel, Base):
 
     def __repr__(self):
         """Returns a string representation of the ``State`` class"""
-        return f"<State: name={self.name}>"
+        return "<State: name={}>".format(self.name)
