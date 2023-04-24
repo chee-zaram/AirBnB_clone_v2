@@ -4,10 +4,11 @@ from flask import Flask, render_template
 from models import storage
 from models.state import State
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 
 
-@app.route('/states', strict_slashes=False)
-@app.route('/states/<id>', strict_slashes=False)
+@app.route('/states')
+@app.route('/states/<id>')
 def states(id=""):
     """Displays all states or a state with a given id"""
 
